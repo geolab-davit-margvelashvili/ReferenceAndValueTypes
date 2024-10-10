@@ -1,7 +1,20 @@
 ﻿public class Person
 {
+    public string PersonalNumber { get; set; }
     public int Age { get; set; }
     public string Name { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Person person)
+        {
+            return PersonalNumber == person.PersonalNumber;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 public struct PersonStructure
@@ -14,46 +27,108 @@ public class Program
 {
     public static void Main()
     {
-        int.TryParse(Console.ReadLine(), out int number1);
-        int number2 = number1;
-
-        number1 = 50;
-
-        Console.WriteLine($"number1 before increase: {number1}");
-        IncreaseByTen(ref number1);
-        Console.WriteLine($"number1 after increase: {number1}");
-
         Person person1 = new Person()
         {
-            Age = 25,
+            PersonalNumber = "01001020345",
+            Age = 20,
             Name = "Daviti"
         };
 
-        RedefineObject(person1);
-        RedefineObjectByRef(ref person1);
-        SetName(person1);
-        AssignValue(out var number5);
-        Console.WriteLine(number5);
-
         Person person2 = new Person()
         {
+            PersonalNumber = "01001020345",
             Age = 20,
-            Name = "Giorigi"
+            Name = "Daviti"
         };
 
-        person1 = person2;
-        person1.Age = 60;
+        var person5 = person2; //  = person1;
 
-        Console.WriteLine(person1.Age);
+        if (ReferencesEqual(person1, person2, person5))
+        {
+            Console.WriteLine("All references are equal");
+        }
+        else
+        {
+            Console.WriteLine("Not all references are equal");
+        }
+
+        if (ReferenceEquals(person1, person2))
+        {
+            Console.WriteLine("ReferenceEquals(person1, person2)");
+        }
+        else
+        {
+            Console.WriteLine("!ReferenceEquals(person1, person2)");
+        }
+
+        if (person1.Equals(person2))
+        {
+            Console.WriteLine("person1.Equals(person2)");
+        }
+        else
+        {
+            Console.WriteLine("!person1.Equals(person2)");
+        }
 
         PersonStructure person3 = new PersonStructure
         {
-            Name = person2.Name,
-            Age = person2.Age
+            Name = "Giorgi",
+            Age = 25
         };
-        //person2 = person3; // ეს არ შეიძლება
+
+        PersonStructure person4 = new PersonStructure
+        {
+            Name = "Giorgi",
+            Age = 25
+        };
+
+        if (person3.Equals(person4))
+        {
+            Console.WriteLine("person3 == person4");
+        }
+        else
+        {
+            Console.WriteLine("person3 != person4");
+        }
+
+        List<Person> personClasses = new List<Person>
+        {
+            person1,
+            person2
+        };
+
+        List<PersonStructure> personStructures = new List<PersonStructure>()
+        {
+            person3,
+            person4
+        };
+
+        for (int i = 0; i < personClasses.Count; i++)
+        {
+            personClasses[i].Age++;
+        }
+
+        for (int i = 0; i < personStructures.Count; i++)
+        {
+            PersonStructure temp = personStructures[i];
+            temp.Age++;
+            personStructures[i] = temp;
+        }
 
         Console.WriteLine();
+    }
+
+    public static bool ReferencesEqual(params object[] objects)
+    {
+        var first = objects[0];
+        for (int i = 1; i < objects.Length; i++)
+        {
+            if (!ReferenceEquals(first, objects[i]))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static void IncreaseByTen(ref int number)
