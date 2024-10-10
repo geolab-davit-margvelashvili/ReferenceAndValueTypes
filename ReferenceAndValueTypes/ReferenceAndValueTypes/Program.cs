@@ -1,8 +1,60 @@
 ﻿public class Person
 {
-    public string PersonalNumber { get; set; }
+    //1) გამოიძახება კლასთან პირველი შეხების დროს
+    public static int PersonalNumberLength { get; } = 9;
+
+    public string PersonalNumber { get; set; } = "1111111111"; // 1) პირველ ხდება ინიციალიზაცია
     public int Age { get; set; }
     public string Name { get; set; }
+
+    //2) გამოიძახება კლასთან პირველი შეხების დროს
+    static Person()
+    {
+        PersonalNumberLength = 11;
+    }
+
+    public Person()
+    {
+        PersonalNumber = "";
+        Name = "";
+        Age = 1;
+    }
+
+    // 2) მეორე ხდება კონსტრუქტორის გამოძახება
+    public Person(string personalNumber) : this()
+    {
+        if (personalNumber.Length == PersonalNumberLength)
+        {
+            PersonalNumber = personalNumber;
+        }
+    }
+
+    public Person(string personalNumber, string name) : this(personalNumber)
+    {
+        Name = name;
+    }
+
+    public Person(string personalNumber, string name, int age) : this(personalNumber, name)
+    {
+        Age = age;
+    }
+
+    public Person(int age)
+    {
+        Age = age;
+    }
+
+    public Person(int age, string name)
+    {
+        Age = age;
+        Name = name;
+    }
+
+    public Person(string personalNumber, int age)
+    {
+        this.PersonalNumber = personalNumber;
+        Age = age;
+    }
 
     public override bool Equals(object? obj)
     {
@@ -27,6 +79,10 @@ public class Program
 {
     public static void Main()
     {
+        Console.WriteLine(Person.PersonalNumberLength);
+
+        Person person0 = new Person("01001020345", "Daviti", 30);
+
         Person person1 = new Person()
         {
             PersonalNumber = "01001020345",
@@ -34,9 +90,9 @@ public class Program
             Name = "Daviti"
         };
 
-        Person person2 = new Person()
+        Person person2 = new Person("01001020345")
         {
-            PersonalNumber = "01001020345",
+            PersonalNumber = "000000000", // 3) მესამე გამოიძახება Property Initializer-ი
             Age = 20,
             Name = "Daviti"
         };
